@@ -1,5 +1,5 @@
 # Faster-Punch
-An Ultrakill mod that makes you punch real fast
+An mod that makes the feedbacker, knuckleblaster, and whiplash a whole lot faster.
 
 ## Changelog
 * 1.0.0
