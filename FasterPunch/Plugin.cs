@@ -39,7 +39,8 @@ namespace FasterPunch
 
             Harmony harm = new Harmony(PluginInfo.GUID);
             harm.PatchAll(typeof(PatchyMcPatchFace));
-            Debug.Log("we did it reddit!!");
+            Debug.Log("we did it reddit!! ");
+            // TODO: Figure out plugin config icon stuff
         }
 
         public void Update()
@@ -71,6 +72,19 @@ namespace FasterPunch
                 ConfigManager.DamageUpType.hidden = false;
                 ConfigManager.ParryDamageAmount.hidden = false;
             }
+        }
+    }
+
+    public static class Util
+    {
+        public static string GetGameDirectory()
+        {
+            return Utility.ParentDirectory(UnityEngine.Application.dataPath, 1);
+        }
+
+        public static string GetPluginDirectory()
+        {
+            return Path.Combine(GetGameDirectory(), "BepInEx", "plugins");
         }
     }
 
@@ -180,12 +194,15 @@ namespace FasterPunch
             }
         }
 
-        /*[HarmonyPatch(typeof(HookArm), nameof(HookArm.FixedUpdate))]
+        [HarmonyPatch(typeof(HookArm), nameof(HookArm.FixedUpdate))]
         [HarmonyPrefix]
         public static void SpeedHook_FixedUpdate_Prefix(HookArm __instance)
         {
-            Vector3.Distance(base.transform.position, this.hookPoint) > 300f)
-        }*/
+            if (__instance.state == HookState.Ready && __instance.returning)
+            {
+                __instance.hookPoint = __instance.hand.position;
+            }
+        }
 
         [HarmonyPatch(typeof(HookArm), nameof(HookArm.FixedUpdate))]
         [HarmonyPostfix]
@@ -193,11 +210,6 @@ namespace FasterPunch
         {
             if (ConfigManager.HookEnabled.value)
             {
-                if (__instance.state == HookState.Ready && __instance.returning)
-                {
-                    __instance.hookPoint = __instance.hand.position;
-                }
-
                 if (__instance.state == HookState.Throwing)
                 {
                     //very hacky
@@ -215,7 +227,7 @@ namespace FasterPunch
                                 __instance.enemyRigidbody.position = MonoSingleton<NewMovement>.Instance.transform.position - (MonoSingleton<NewMovement>.Instance.transform.position - __instance.hookPoint).normalized * (tpDist + 2.5f);
                                 tp = false;
                             }
-                            __instance.enemyRigidbody.velocity = (MonoSingleton<NewMovement>.Instance.transform.position - __instance.hookPoint).normalized * (ConfigManager.WhipPullSpeed.value - 60f);
+                            __instance.enemyRigidbody.velocity = (MonoSingleton<NewMovement>.Instance.transform.position - __instance.hookPoint).normalized * (ConfigManager.WhipPullSpeed.value);
                             return;
                         }
                         if (tp && (MonoSingleton<CameraController>.Instance.transform.position - __instance.hookPoint).magnitude > (tpDist + 2f))
@@ -223,7 +235,7 @@ namespace FasterPunch
                             __instance.enemyRigidbody.position = MonoSingleton<CameraController>.Instance.transform.position - (MonoSingleton<CameraController>.Instance.transform.position - __instance.hookPoint).normalized * (tpDist + 2.5f);
                             tp = false;
                         }
-                        __instance.enemyRigidbody.velocity = (MonoSingleton<CameraController>.Instance.transform.position - __instance.hookPoint).normalized * (ConfigManager.WhipPullSpeed.value - 60f);
+                        __instance.enemyRigidbody.velocity = (MonoSingleton<CameraController>.Instance.transform.position - __instance.hookPoint).normalized * (ConfigManager.WhipPullSpeed.value);
                         return;
                     }
                     else
@@ -238,7 +250,7 @@ namespace FasterPunch
                             __instance.caughtEid = null;
                             if (!MonoSingleton<NewMovement>.Instance.boost || MonoSingleton<NewMovement>.Instance.sliding)
                             {
-                                MonoSingleton<NewMovement>.Instance.rb.velocity = (__instance.hookPoint - MonoSingleton<NewMovement>.Instance.transform.position).normalized * (ConfigManager.WhipPullSpeed.value - 60f);
+                                MonoSingleton<NewMovement>.Instance.rb.velocity = (__instance.hookPoint - MonoSingleton<NewMovement>.Instance.transform.position).normalized * (ConfigManager.WhipPullSpeed.value);
                                 return;
                             }
                             return;
