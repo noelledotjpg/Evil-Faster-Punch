@@ -10,6 +10,9 @@ using static UnityEngine.Random;
 using PluginConfig.API;
 using PluginConfig.API.Fields;
 using static FasterPunch.ConfigManager;
+using PluginConfig;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO;
 
 namespace FasterPunch
 {
@@ -70,7 +73,7 @@ namespace FasterPunch
             }
         }
     }
-    
+
     public static class ConfigManager
     {
 
