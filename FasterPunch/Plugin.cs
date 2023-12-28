@@ -1,25 +1,20 @@
 ﻿using BepInEx;
 using HarmonyLib;
-using Sandbox;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using static UnityEngine.Random;
 
 using PluginConfig.API;
 using PluginConfig.API.Fields;
 using static FasterPunch.ConfigManager;
-using PluginConfig;
-using static System.Net.Mime.MediaTypeNames;
 using System.IO;
+using System.Reflection;
+using PluginConfig;
 
 namespace FasterPunch
 {
     [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
+    [BepInDependency(PluginConfiguratorController.PLUGIN_GUID)]
     public class Plugin : BaseUnityPlugin
     {
-        
         public void Start()
         {
             ConfigManager.config = PluginConfigurator.Create(PluginInfo.Name, PluginInfo.GUID);
@@ -27,51 +22,44 @@ namespace FasterPunch
             ConfigManager.StandardEnabled = new BoolField(ConfigManager.config.rootPanel, "Fast Feedbacker", "field.standardenabled", true, true);
             ConfigManager.PunchDelay = new FloatField(ConfigManager.config.rootPanel, "Feedbacker Punch Delay", "field.punchDelay", 0f, 0f, 1f, true, true);
 
+            ConfigManager.StandardEnabled.onValueChange += (e) =>
+            {
+                ConfigManager.PunchDelay.interactable = e.value;
+            };
+            ConfigManager.StandardEnabled.TriggerValueChangeEvent();
+
             ConfigManager.HeavyEnabled = new BoolField(ConfigManager.config.rootPanel, "Fast Knuckleblaster", "field.heavyenabled", true, true);
             
             ConfigManager.HookEnabled = new BoolField(ConfigManager.config.rootPanel, "Fast Whiplash", "field.hookenabled", true, true);
             ConfigManager.WhipThrowSpeed = new FloatField(ConfigManager.config.rootPanel, "Whiplash Throw Speed", "field.whipthrowspeed", 750f, 250f, 1500f, true, true);
             ConfigManager.WhipPullSpeed = new FloatField(ConfigManager.config.rootPanel, "Whiplash Pulling Speed", "field.whipcarryspeed", 120f, 60f, 540f, true, true);
 
+            ConfigManager.HookEnabled.onValueChange += (e) =>
+            {
+                ConfigManager.WhipThrowSpeed.interactable = e.value;
+                ConfigManager.WhipPullSpeed.interactable = e.value;
+            };
+            ConfigManager.HookEnabled.TriggerValueChangeEvent();
+
             ConfigManager.ParryUpDamage = new BoolField(ConfigManager.config.rootPanel, "Parry Adds Damage", "field.parryupdamage", true, true);
             ConfigManager.DamageUpType = new EnumField<IncreaseType>(ConfigManager.config.rootPanel, "Parry Damage Increase Type", "field.uptype", IncreaseType.Additive);
             ConfigManager.ParryDamageAmount = new FloatField(ConfigManager.config.rootPanel, "Parry Damage Amount", "field.parrydamageamount", 1f, 1f, 100f, true, true);
 
+            ConfigManager.ParryUpDamage.onValueChange += (e) =>
+            {
+                ConfigManager.DamageUpType.interactable = e.value;
+                ConfigManager.ParryDamageAmount.interactable = e.value;
+            };
+            ConfigManager.ParryUpDamage.TriggerValueChangeEvent();
+
+            string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string iconFilePath = Path.Combine(workingDirectory, "icon.png");
+            ConfigManager.config.SetIconWithURL("file://" + iconFilePath);
+
             Harmony harm = new Harmony(PluginInfo.GUID);
             harm.PatchAll(typeof(PatchyMcPatchFace));
+
             Debug.Log("we did it reddit!! ");
-            // TODO: Figure out plugin config icon stuff
-        }
-
-        public void Update()
-        {
-            if (!ConfigManager.StandardEnabled.value)
-            {
-                ConfigManager.PunchDelay.hidden = true;
-            } else
-            {
-                ConfigManager.PunchDelay.hidden = false;
-            }
-
-            if (!ConfigManager.HookEnabled.value)
-            {
-                ConfigManager.WhipThrowSpeed.hidden = true;
-                ConfigManager.WhipPullSpeed.hidden = true;
-            } else
-            {
-                ConfigManager.WhipThrowSpeed.hidden = false;
-                ConfigManager.WhipPullSpeed.hidden = false;
-            }
-
-            if (!ConfigManager.ParryUpDamage.value)
-            {
-                ConfigManager.DamageUpType.hidden = true;
-                ConfigManager.ParryDamageAmount.hidden = true;
-            } else
-            {
-                ConfigManager.DamageUpType.hidden = false;
-                ConfigManager.ParryDamageAmount.hidden = false;
-            }
         }
     }
 
@@ -79,18 +67,28 @@ namespace FasterPunch
     {
         public static string GetGameDirectory()
         {
-            return Utility.ParentDirectory(UnityEngine.Application.dataPath, 1);
+            // From https://github.com/wafflethings/Atlas/blob/master/Atlas/Utils.cs
+            string path = Application.dataPath;
+            if (Application.platform == RuntimePlatform.OSXPlayer)
+            {
+                path = Utility.ParentDirectory(path, 2);
+            }
+            else if (Application.platform == RuntimePlatform.WindowsPlayer)
+            {
+                path = Utility.ParentDirectory(path, 1);
+            }
+
+            return path;
         }
 
         public static string GetPluginDirectory()
         {
-            return Path.Combine(GetGameDirectory(), "BepInEx", "plugins");
+            return Paths.PluginPath;
         }
     }
 
     public static class ConfigManager
     {
-
         public enum IncreaseType
         {
             Additive,
