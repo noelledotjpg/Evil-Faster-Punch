@@ -53,13 +53,11 @@ namespace FasterPunch
             ConfigManager.ParryUpDamage.TriggerValueChangeEvent();
 
             string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string iconFilePath = Path.Combine(workingDirectory, "icon.png");
+            string iconFilePath = Path.Combine(workingDirectory, "../icon.png");
             ConfigManager.config.SetIconWithURL("file://" + iconFilePath);
 
             Harmony harm = new Harmony(PluginInfo.GUID);
             harm.PatchAll(typeof(PatchyMcPatchFace));
-
-            Debug.Log("we did it reddit!! ");
         }
     }
 
