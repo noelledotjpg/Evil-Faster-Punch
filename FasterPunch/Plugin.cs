@@ -129,38 +129,35 @@ namespace FasterPunch
         [HarmonyPrefix]
         public static void SpeedPunch(Punch __instance)
         {
-            if (ConfigManager.StandardEnabled.value || ConfigManager.HeavyEnabled.value)
+            if (!__instance.shopping && !GameStateManager.Instance.PlayerInputLocked)
             {
-                if (!__instance.shopping)
+                if (__instance.type == FistType.Standard && ConfigManager.StandardEnabled.value)
                 {
-                    if (__instance.type == FistType.Standard && ConfigManager.StandardEnabled.value)
+                    if (punchWait > ConfigManager.PunchDelay.value)
                     {
-                        if (punchWait > ConfigManager.PunchDelay.value)
-                        {
-                            punchReady = true;
-                        }
-                        else
-                        {
-                            punchWait += Time.deltaTime;
-                        }
-                        if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
-                        {
-                            if (punchReady)
-                            {
-                                __instance.PunchStart();
-                                punchWait -= ConfigManager.PunchDelay.value;
-                                punchReady = false;
-                            }
-                        }
-                        __instance.ReadyToPunch();
-                        __instance.cooldownCost = 0f;
+                        punchReady = true;
                     }
+                    else
+                    {
+                        punchWait += Time.deltaTime;
+                    }
+                    if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
+                    {
+                        if (punchReady)
+                        {
+                            __instance.PunchStart();
+                            punchWait -= ConfigManager.PunchDelay.value;
+                            punchReady = false;
+                        }
+                    }
+                    __instance.ReadyToPunch();
+                    __instance.cooldownCost = 0f;
+                }
 
-                    if (__instance.type == FistType.Heavy && ConfigManager.HeavyEnabled.value)
-                    {
-                        __instance.ReadyToPunch();
-                        __instance.cooldownCost = 0f;
-                    }
+                if (__instance.type == FistType.Heavy && ConfigManager.HeavyEnabled.value)
+                {
+                    __instance.ReadyToPunch();
+                    __instance.cooldownCost = 0f;
                 }
             }
         }
