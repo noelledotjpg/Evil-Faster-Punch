@@ -87,3 +87,4 @@ C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\F
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Naelstrof.JigglePhysics.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\pcon.core.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Vertx.Debugging.Runtime.dll
+C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Unity.Mathematics.dll

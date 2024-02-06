@@ -25,6 +25,7 @@ namespace FasterPunch
             ConfigManager.StandardEnabled.onValueChange += (e) =>
             {
                 ConfigManager.PunchDelay.interactable = e.value;
+                ConfigManager.PunchDelay.hidden = !e.value;
             };
             ConfigManager.StandardEnabled.TriggerValueChangeEvent();
 
@@ -37,7 +38,9 @@ namespace FasterPunch
             ConfigManager.HookEnabled.onValueChange += (e) =>
             {
                 ConfigManager.WhipThrowSpeed.interactable = e.value;
+                ConfigManager.WhipThrowSpeed.hidden = !e.value;
                 ConfigManager.WhipPullSpeed.interactable = e.value;
+                ConfigManager.WhipPullSpeed.hidden = !e.value;
             };
             ConfigManager.HookEnabled.TriggerValueChangeEvent();
 
@@ -48,7 +51,9 @@ namespace FasterPunch
             ConfigManager.ParryUpDamage.onValueChange += (e) =>
             {
                 ConfigManager.DamageUpType.interactable = e.value;
+                ConfigManager.DamageUpType.hidden = !e.value;
                 ConfigManager.ParryDamageAmount.interactable = e.value;
+                ConfigManager.ParryDamageAmount.hidden = !e.value;
             };
             ConfigManager.ParryUpDamage.TriggerValueChangeEvent();
 
@@ -106,6 +111,11 @@ namespace FasterPunch
         public static BoolField ParryUpDamage;
         public static EnumField<IncreaseType> DamageUpType;
         public static FloatField ParryDamageAmount;
+
+        public static bool CheatCheck()
+        {
+            return StandardEnabled.value | HeavyEnabled.value | HookEnabled.value | ParryUpDamage.value;
+        }
     }
 
     public class PatchyMcPatchFace
@@ -119,35 +129,38 @@ namespace FasterPunch
         [HarmonyPrefix]
         public static void SpeedPunch(Punch __instance)
         {
-            if (!__instance.shopping)
+            if (ConfigManager.StandardEnabled.value || ConfigManager.HeavyEnabled.value)
             {
-                if (__instance.type == FistType.Standard && ConfigManager.StandardEnabled.value)
+                if (!__instance.shopping)
                 {
-                    if (punchWait > ConfigManager.PunchDelay.value)
+                    if (__instance.type == FistType.Standard && ConfigManager.StandardEnabled.value)
                     {
-                        punchReady = true;
-                    }
-                    else
-                    {
-                        punchWait += Time.deltaTime;
-                    }
-                    if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
-                    {
-                        if (punchReady)
+                        if (punchWait > ConfigManager.PunchDelay.value)
                         {
-                            __instance.PunchStart();
-                            punchWait -= ConfigManager.PunchDelay.value;
-                            punchReady = false;
+                            punchReady = true;
                         }
+                        else
+                        {
+                            punchWait += Time.deltaTime;
+                        }
+                        if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
+                        {
+                            if (punchReady)
+                            {
+                                __instance.PunchStart();
+                                punchWait -= ConfigManager.PunchDelay.value;
+                                punchReady = false;
+                            }
+                        }
+                        __instance.ReadyToPunch();
+                        __instance.cooldownCost = 0f;
                     }
-                    __instance.ReadyToPunch();
-                    __instance.cooldownCost = 0f;
-                }
 
-                if (__instance.type == FistType.Heavy && ConfigManager.HeavyEnabled.value)
-                {
-                    __instance.ReadyToPunch();
-                    __instance.cooldownCost = 0f;
+                    if (__instance.type == FistType.Heavy && ConfigManager.HeavyEnabled.value)
+                    {
+                        __instance.ReadyToPunch();
+                        __instance.cooldownCost = 0f;
+                    }
                 }
             }
         }
@@ -259,5 +272,41 @@ namespace FasterPunch
                 }
             }
         }
+        [HarmonyPatch(typeof(LeaderboardController), nameof(LeaderboardController.SubmitCyberGrindScore))]
+        [HarmonyPrefix]
+        public static bool no(LeaderboardController __instance)
+        {
+            if (ConfigManager.CheatCheck())
+            {
+                Debug.Log("Cheaty stuff enabled");
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(LeaderboardController), nameof(LeaderboardController.SubmitLevelScore))]
+        [HarmonyPrefix]
+        public static bool nope(LeaderboardController __instance)
+        {
+            if (ConfigManager.CheatCheck())
+            {
+                Debug.Log("Cheaty stuff enabled");
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(LeaderboardController), nameof(LeaderboardController.SubmitFishSize))]
+        [HarmonyPrefix]
+        public static bool notevenfish(LeaderboardController __instance)
+        {
+            if (ConfigManager.CheatCheck())
+            {
+                Debug.Log("Cheaty stuff enabled");
+                return false;
+            }
+            return true;
+        }
     }
+    
 }
