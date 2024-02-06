@@ -9,3 +9,6 @@ An mod that makes the feedbacker, knuckleblaster, and whiplash a whole lot faste
   * Icon shows up in PluginConfig thanks to eternalUnion.
 * 1.0.2
   * Literally removed 3 characters.
+* 1.0.3
+  * Disabled leaderboard if faster punch setting are enabled
+  * Minor fixes
