@@ -25,7 +25,8 @@ namespace FasterPunch
             ConfigManager.StandardEnabled.onValueChange += (e) =>
             {
                 ConfigManager.PunchDelay.interactable = e.value;
-                ConfigManager.PunchDelay.hidden = !e.value;
+                ConfigManager.PunchDelay.hidden = !e.value;//cooldownCost
+
             };
             ConfigManager.StandardEnabled.TriggerValueChangeEvent();
 
@@ -129,35 +130,39 @@ namespace FasterPunch
         [HarmonyPrefix]
         public static void SpeedPunch(Punch __instance)
         {
-            if (!__instance.shopping && !GameStateManager.Instance.PlayerInputLocked)
+            if (ConfigManager.StandardEnabled.value || ConfigManager.HeavyEnabled.value)
             {
-                if (__instance.type == FistType.Standard && ConfigManager.StandardEnabled.value)
+                if (!__instance.shopping && !GameStateManager.Instance.PlayerInputLocked)
                 {
-                    if (punchWait > ConfigManager.PunchDelay.value)
+                    __instance.cooldownCost = 0;
+                    if (__instance.type == FistType.Standard && ConfigManager.StandardEnabled.value)
                     {
-                        punchReady = true;
-                    }
-                    else
-                    {
-                        punchWait += Time.deltaTime;
-                    }
-                    if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
-                    {
-                        if (punchReady)
+                        if (punchWait > ConfigManager.PunchDelay.value)
                         {
-                            __instance.PunchStart();
-                            punchWait -= ConfigManager.PunchDelay.value;
-                            punchReady = false;
+                            punchReady = true;
                         }
+                        else
+                        {
+                            punchWait += Time.deltaTime;
+                        }
+                        if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
+                        {
+                            if (punchReady)
+                            {
+                                __instance.PunchStart();
+                                punchWait -= ConfigManager.PunchDelay.value;
+                                punchReady = false;
+                            }
+                        }
+                        __instance.ReadyToPunch();
+                        __instance.cooldownCost = 0f;
                     }
-                    __instance.ReadyToPunch();
-                    __instance.cooldownCost = 0f;
-                }
 
-                if (__instance.type == FistType.Heavy && ConfigManager.HeavyEnabled.value)
-                {
-                    __instance.ReadyToPunch();
-                    __instance.cooldownCost = 0f;
+                    if (__instance.type == FistType.Heavy && ConfigManager.HeavyEnabled.value)
+                    {
+                        __instance.ReadyToPunch();
+                        __instance.cooldownCost = 0f;
+                    }
                 }
             }
         }
