@@ -12,3 +12,5 @@ An mod that makes the feedbacker, knuckleblaster, and whiplash a whole lot faste
 * 1.0.3
   * Disabled leaderboard if faster punch setting are enabled
   * Minor fixes
+* 1.0.4
+  * Fixed bug that caused fast punching to heavily delay normal punching
