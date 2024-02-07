@@ -278,36 +278,21 @@ namespace FasterPunch
         [HarmonyPrefix]
         public static bool no(LeaderboardController __instance)
         {
-            if (ConfigManager.CheatCheck())
-            {
-                Debug.Log("Cheaty stuff enabled");
-                return false;
-            }
-            return true;
+            return false;
         }
 
         [HarmonyPatch(typeof(LeaderboardController), nameof(LeaderboardController.SubmitLevelScore))]
         [HarmonyPrefix]
         public static bool nope(LeaderboardController __instance)
         {
-            if (ConfigManager.CheatCheck())
-            {
-                Debug.Log("Cheaty stuff enabled");
-                return false;
-            }
-            return true;
+            return false;
         }
 
         [HarmonyPatch(typeof(LeaderboardController), nameof(LeaderboardController.SubmitFishSize))]
         [HarmonyPrefix]
         public static bool notevenfish(LeaderboardController __instance)
         {
-            if (ConfigManager.CheatCheck())
-            {
-                Debug.Log("Cheaty stuff enabled");
-                return false;
-            }
-            return true;
+            return false;
         }
     }
     
