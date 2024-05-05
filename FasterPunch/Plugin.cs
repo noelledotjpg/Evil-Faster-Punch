@@ -67,30 +67,6 @@ namespace FasterPunch
         }
     }
 
-    public static class Util
-    {
-        public static string GetGameDirectory()
-        {
-            // From https://github.com/wafflethings/Atlas/blob/master/Atlas/Utils.cs
-            string path = Application.dataPath;
-            if (Application.platform == RuntimePlatform.OSXPlayer)
-            {
-                path = Utility.ParentDirectory(path, 2);
-            }
-            else if (Application.platform == RuntimePlatform.WindowsPlayer)
-            {
-                path = Utility.ParentDirectory(path, 1);
-            }
-
-            return path;
-        }
-
-        public static string GetPluginDirectory()
-        {
-            return Paths.PluginPath;
-        }
-    }
-
     public static class ConfigManager
     {
         public enum IncreaseType
@@ -145,7 +121,8 @@ namespace FasterPunch
                         {
                             punchWait += Time.deltaTime;
                         }
-                        if (__instance.type == FistType.Standard && MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed)
+                        if (MonoSingleton<InputManager>.Instance.InputSource.Actions.Fist.PunchFeedbacker.IsPressed() || 
+                            (MonoSingleton<InputManager>.Instance.InputSource.Punch.IsPressed))
                         {
                             if (punchReady)
                             {
@@ -173,7 +150,6 @@ namespace FasterPunch
         {
             if (ConfigManager.ParryUpDamage.value)
             {
-                Debug.Log("HAHA: " + proj.damage);
                 if (ConfigManager.DamageUpType.value == IncreaseType.Additive)
                 {
                     proj.damage += ConfigManager.ParryDamageAmount.value;
@@ -183,16 +159,6 @@ namespace FasterPunch
                 }
             }
         }
-
-        /*[HarmonyPatch(typeof(Punch), nameof(Punch.ActiveStart))]
-        [HarmonyPrefix]
-        public static void ParryAddCannonDamage(Punch __instance)
-        {
-            if (__instance.type == FistType.Standard)
-            {
-                Debug.Log("fefee");
-            }
-        }*/
 
         [HarmonyPatch(typeof(HookArm), nameof(HookArm.Update))]
         [HarmonyPrefix]

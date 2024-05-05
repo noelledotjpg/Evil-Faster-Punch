@@ -3,7 +3,6 @@ C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\F
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\0Harmony.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Assembly-CSharp.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\BepInEx.dll
-C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\PluginConfigurator.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Unity.Addressables.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\UnityEngine.AssetBundleModule.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\UnityEngine.CoreModule.dll
@@ -88,3 +87,7 @@ C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\F
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\pcon.core.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Vertx.Debugging.Runtime.dll
 C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Unity.Mathematics.dll
+C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Unity.Burst.dll
+C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\plog.unity.dll
+C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\theca\Documents\Coding Stuff\CVS Deluxe\VS\United Kingdom\FasterPunch\FasterPunch\bin\Release\Unity.Burst.Unsafe.dll
